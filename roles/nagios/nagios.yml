@@ -1,0 +1,23 @@
+---
+ hosts: centos, ubuntu
+ become: true
+ tasks:
+   - name: Install Nagios and dependencies
+     yum:
+       name:
+         - nagios
+         - nagios-plugins-all
+       state: present
+     when: ansible_distribution == "CentOS"
+     apt:
+       name:
+         - nagios
+         - nagios-plugins
+       state: present
+     when: ansible_distribution == "Ubuntu"
+
+   - name: Start and enable Nagios service
+     service:
+       name: nagios
+       state: started
+       enabled: true

@@ -1,0 +1,56 @@
+---
+- hosts: centos, ubuntu
+  become: true
+  tasks:
+    - name: Install Apache and PHP
+      yum:
+        name:
+          - httpd
+          - php
+        state: present
+      when: ansible_distribution == "CentOS"
+      apt:
+        name:
+          - apache2
+          - php
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      notify: restart apache
+
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_distribution == "CentOS"
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_distribution == "Ubuntu"
+
+- hosts: centos, ubuntu
+  become: true
+  tasks:
+    - name: Install MariaDB
+      yum:
+        name: mariadb-server
+        state: present
+      when: ansible_distribution == "CentOS"
+      apt:
+        name: mariadb-server
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      notify: start mariadb
+
+  handlers:
+    - name: start mariadb
+      service:
+        name: mariadb
+        state: started
+      when: ansible_distribution == "CentOS"
+    - name: start mariadb
+      service:
+        name: mariadb
+        state: started
+      when: ansible_distribution == "Ubuntu"

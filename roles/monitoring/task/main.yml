@@ -1,0 +1,61 @@
+---
+-  hosts: workstation
+  become: true
+  tasks:
+    - name: Install InfluxDB
+      yum:
+        name: influxdb
+        state: present
+      when: ansible_distribution == "CentOS"
+      apt:
+        name: influxdb
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      notify: start influxdb
+
+  handlers:
+    - name: start influxdb
+      service:
+        name: influxdb 
+        state: started
+
+- hosts: Server1
+  become: true
+  tasks:
+    - name: Install Prometheus
+      yum:
+        name: prometheus
+        state: present
+     when: ansible_distribution == "CentOS"
+     apt:
+        name: prometheus
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      notify: start prometheus
+
+  handlers:
+    - name: start prometheus
+      service:
+        name: prometheus
+        state: started
+
+- hosts: CentOS
+  become: true
+  tasks:
+    - name: Install Grafana
+      yum:
+        name: grafana
+        state: present
+      when: ansible_distribution == "CentOS"
+      apt:
+         name: grafana
+         state: present      
+       when: ansible_distribution == "Ubuntu"
+       notify: start grafana
+ 
+  handlers:
+    - name: start grafana
+      service:
+        name: grafana
+        state: started
+

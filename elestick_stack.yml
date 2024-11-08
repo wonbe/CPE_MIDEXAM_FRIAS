@@ -1,0 +1,61 @@
+---
+ hosts: workstation
+ become: true
+ tasks:
+   - name: Install Elasticsearch
+     yum:
+       name: elasticsearch
+       state: present
+     when: ansible_distribution == "CentOS"
+     apt:
+       name: elasticsearch
+       state: present
+     when: ansible_distribution == "Ubuntu"
+     notify: restart elasticsearch
+
+ handlers:
+   - name: restart elasticsearch
+     service:
+       name: elasticsearch
+       state: restarted
+
+ hosts: Server1
+ become: true
+ tasks:
+   - name: Install Kibana
+     yum:
+       name: kibana
+       state: present
+     when: ansible_distribution == "CentOS"
+     apt:
+       name: kibana
+       state: present
+     when: ansible_distribution == "Ubuntu"
+     notify: restart kibana
+
+ handlers:
+   - name: restart kibana
+     service:
+       name: kibana
+       state: restarted
+
+ hosts: CentOS
+ become: true
+ tasks:
+   - name: Install Logstash
+     yum:
+       name: logstash
+       state: present
+     when: ansible_distribution == "CentOS"
+     apt:
+       name: logstash
+       state: present 
+     when: ansible_distribution == "Ubuntu"
+     notify: restart logstash
+
+ handlers:
+   - name: restart logstash
+     service:
+       name: logstash
+       state: restarted
+
